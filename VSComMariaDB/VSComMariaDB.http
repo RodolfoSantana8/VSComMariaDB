@@ -1,0 +1,6 @@
+@VSComMariaDB_HostAddress = http://localhost:5001
+
+GET {{VSComMariaDB_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
