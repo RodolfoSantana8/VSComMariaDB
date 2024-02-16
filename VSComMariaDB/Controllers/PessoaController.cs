@@ -22,13 +22,23 @@ namespace VSComMariaDB.Controllers
             return vLista; 
         }
 
+        [HttpGet("ListaAsync")]
+        public async  Task<List<Pessoa>> GetListaAsync()
+        {
+            var _dbContext = new _DbContext();
+            var vLista = await _dbContext.Pessoa.ToListAsync();
+
+            return vLista;
+        }
+
+
         /// <summary>
         /// Pegar os dados de uma pessoa específica
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public  Pessoa GetPessoa(int id)
+        public async Task<Pessoa> GetPessoa(int id)
         {
             //Instanciar o banco de dados
             var _dbContext = new _DbContext();
@@ -38,7 +48,7 @@ namespace VSComMariaDB.Controllers
                 .Where(p => p.Id == id)
                 .FirstOrDefault();*/
 
-            var vPessoa = _dbContext.Pessoa.Find(id);
+            var vPessoa = await _dbContext.Pessoa.FindAsync(id);
 
             //Retornar dos dados
             return vPessoa;
@@ -46,30 +56,30 @@ namespace VSComMariaDB.Controllers
 
 
         [HttpPost]
-        public Pessoa Inserir(Pessoa pessoa)
+        public async Task<Pessoa> Inserir(Pessoa pessoa)
         {
             var _dbContext = new _DbContext();
-            _dbContext.Pessoa.Add(pessoa);
-            _dbContext.SaveChanges();
+            await _dbContext.Pessoa.AddAsync(pessoa);
+            await _dbContext.SaveChangesAsync();
 
 
             return pessoa;
         }
 
         [HttpPut]
-        public Pessoa Alterar(Pessoa pessoa)
+        public async Task<Pessoa> Alterar(Pessoa pessoa)
         {
             var _dbContext = new _DbContext();
 
             _dbContext.Pessoa.Entry(pessoa).State = EntityState.Modified;
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return pessoa;
         }
 
 
         [HttpDelete("{id}")]
-        public ActionResult Remover(int id)
+        public async Task<ActionResult> Remover(int id)
         {
             //Instanciar o banco de dados
             var _dbContext = new _DbContext();
@@ -78,7 +88,7 @@ namespace VSComMariaDB.Controllers
             //remove o registro encontrado
             _dbContext.Pessoa.Remove(vPessoa);
             //Salvar alterações
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return Ok();
         }
